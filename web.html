@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Voice Assistant - Kaoruko Waguri</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: black;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 20px;
+            border: 2px solid #e74c3c; /* Red border */
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        #logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: transparent;
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid #e74c3c;  /* Red border around the logo */
+            overflow: hidden;
+        }
+
+        #logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        button {
+            background-color: transparent;
+            border: 2px solid #e74c3c;
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            margin: 10px 0; /* Add some spacing between buttons */
+        }
+
+        button:hover {
+            background-color: #e74c3c;
+        }
+
+        #commands {
+            display: none; /* Initially hidden */
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #e74c3c;
+            padding: 15px;
+            margin-top: 10px;
+            text-align: left;
+        }
+
+        #commands ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #commands li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="logo">
+            <img src="logo.png" alt="Alya Logo">
+        </div>
+        <h1>Hey there, I'm Kaoruko Waguri!</h1>
+        <button id="start">Start Voice Assistant</button>
+        <button id="show-commands">See All Commands</button>
+        <p id="status">Status: Waiting for command...</p>
+        <div id="commands">
+            <h2>Available Commands:</h2>
+            <ul>
+                <li>Play music (music name)</li>
+                <li>Weather of (city name)</li>
+                <li>Open (featured webpages)</li>
+                <li>Tell me a joke</li>
+            </ul>
+        </div>
+        <button id="contact-us">Contact Us</button>
+    </div>
+
+    <script>
+        
+        // Initialize the Web Speech API for recognition
+    const startButton = document.getElementById("start");
+    const statusText = document.getElementById("status");
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+
+    recognition.lang = "en-US"; // Set language
+    recognition.interimResults = false; // Final results only
+
+    startButton.addEventListener("click", () => {
+      statusText.textContent = "Status: Listening...";
+      recognition.start();
+    });
+
+    recognition.onresult = (event) => {
+      const command = event.results[0][0].transcript.toLowerCase();
+      statusText.textContent = `Command: ${command}`;
+
+      // Handle commands for websites and apps
+      if (command.includes("open google")) {
+        statusText.textContent = "Opening Google...";
+        window.open("https://www.google.com", "_blank");
+      } else if (command.includes("open youtube")) {
+        statusText.textContent = "Opening YouTube...";
+        window.open("https://www.youtube.com", "_blank");
+      } else if (command.includes("open whatsapp")) {
+        statusText.textContent = "Opening WhatsApp...";
+        window.open("https://web.whatsapp.com", "_blank");
+      } else if (command.includes("open facebook")) {
+        statusText.textContent = "Opening Facebook...";
+        window.open("https://www.facebook.com", "_blank");
+      } else if (command.includes("open instagram")) {
+        statusText.textContent = "Opening Instagram...";
+        window.open("https://www.instagram.com", "_blank");
+      } else if (command.includes("open twitter") || command.includes("open x")) {
+        statusText.textContent = "Opening Twitter...";
+        window.open("https://www.twitter.com", "_blank");
+      } else if (command.includes("open telegram")) {
+        statusText.textContent = "Opening Telegram...";
+        window.open("https://web.telegram.org", "_blank");
+      } else if (command.includes("open reddit")) {
+        statusText.textContent = "Opening Reddit...";
+        window.open("https://www.reddit.com", "_blank");
+      } else if (command.includes("open linkedin")) {
+        statusText.textContent = "Opening LinkedIn...";
+        window.open("https://www.linkedin.com", "_blank");
+      } else if (command.includes("open pinterest")) {
+        statusText.textContent = "Opening Pinterest...";
+        window.open("https://www.pinterest.com", "_blank");
+      } else if (command.includes("open crunchyroll")) {
+        statusText.textContent = "Opening Crunchyroll...";
+        window.open("https://www.crunchyroll.com", "_blank");
+      }else if (command.includes("search")) {
+   const searchQuery = command.replace("search", "").trim();
+   if (searchQuery) {
+      statusText.textContent = `Searching for ${searchQuery}...`;
+      window.open(`https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`, "_blank");
+   }
+}else if (command.includes("weather in")) {
+   const city = command.replace("weather in", "").trim(); // Extract city name
+   fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=d01820511ac18f635bbff98a127f6908&units=metric`)
+      .then(response => response.json())
+      .then(data => {
+         if (data.main) {
+            const temp = data.main.temp;
+            statusText.textContent = `The current temperature in ${city} is ${temp}°C`;
+         } else {
+            statusText.textContent = "Sorry, I couldn't find the weather information for that city.";
+         }
+      })
+      .catch(error => {
+         statusText.textContent = "Error fetching weather data.";
+      });
+}else if (command.includes("play music") || command.includes("play song")) {
+    const songQuery = command.replace("play music", "").replace("play song", "").trim();
+    
+    if (songQuery) {
+        statusText.textContent = `Searching for "${songQuery}"...`;
+
+        // Use the provided YouTube API Key
+        const apiKey = 'AIzaSyDBUuBDmtEjT6HKQoZy4QhTNQ5N2fyg4Zw';  // Provided YouTube API key
+        fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(songQuery)}&type=video&key=${apiKey}`)
+            .then(response => response.json())
+            .then(data => {
+                const videoId = data.items[0].id.videoId; // Get the first result's video ID
+                const videoUrl = `https://www.youtube.com/watch?v=${videoId}&autoplay=1`; // YouTube URL with autoplay
+
+                // Open the video URL in a new tab with autoplay
+                window.open(videoUrl, "_blank");
+                statusText.textContent = `Playing "${songQuery}" on YouTube...`;
+            })
+            .catch(error => {
+                statusText.textContent = "Sorry, I couldn't find the song.";
+            });
+    } else {
+        statusText.textContent = "Please specify a song name.";
+    }
+}
+else if (command.includes("tell me a joke")) {
+   fetch('https://official-joke-api.appspot.com/random_joke')
+      .then(response => response.json())
+      .then(data => {
+         const joke = `${data.setup} - ${data.punchline}`;
+         statusText.textContent = joke;
+      })
+      .catch(error => {
+         statusText.textContent = "Sorry, I couldn't fetch a joke right now.";
+      });
+}
+ else if (command.includes("open github")) {
+        statusText.textContent = "Opening GitHub...";
+        window.open("https://www.github.com", "_blank");
+      } else if (command.includes("open stack overflow")) {
+        statusText.textContent = "Opening Stack Overflow...";
+        window.open("https://stackoverflow.com", "_blank");
+      } else if (command.includes("open amazon")) {
+        statusText.textContent = "Opening Amazon...";
+        window.open("https://www.amazon.com", "_blank");
+      } else if (command.includes("open netflix")) {
+        statusText.textContent = "Opening Netflix...";
+        window.open("https://www.netflix.com", "_blank");
+      } else if (command.includes("open spotify")) {
+        statusText.textContent = "Opening Spotify...";
+        window.open("https://open.spotify.com", "_blank");
+      } else if (command.includes("open flipkart")) {
+        statusText.textContent = "Opening Flipkart...";
+        window.open("https://www.flipkart.com", "_blank");
+      } else if (command.includes("open snapchat")) {
+        statusText.textContent = "Opening Snapchat...";
+        window.open("https://www.snapchat.com", "_blank");
+      } else if (command.includes("open quora")) {
+        statusText.textContent = "Opening Quora...";
+        window.open("https://www.quora.com", "_blank");
+      } else if (command.includes("open zoom")) {
+        statusText.textContent = "Opening Zoom...";
+        window.open("https://zoom.us", "_blank");
+      } else if (command.includes("open microsoft teams")) {
+        statusText.textContent = "Opening Microsoft Teams...";
+        window.open("https://teams.microsoft.com", "_blank");
+      } else if (command.includes("open paypal")) {
+        statusText.textContent = "Opening PayPal...";
+        window.open("https://www.paypal.com", "_blank");
+      } else if (command.includes("open discord")) {
+        statusText.textContent = "Opening Discord...";
+        window.open("https://discord.com", "_blank");
+      } else {
+        statusText.textContent = "Unknown command. Try again.";
+      }
+    };
+
+    recognition.onerror = (event) => {
+      statusText.textContent = `Error: ${event.error}`;
+    };
+
+    recognition.onend = () => {
+      statusText.textContent = "Status: Waiting for command...";
+    };
+        document.getElementById('contact-us').addEventListener('click', function() {
+            window.open('https://twitter.com/ryuudev0', '_blank');
+        });
+
+        document.getElementById('show-commands').addEventListener('click', function() {
+            var commands = document.getElementById('commands');
+            if (commands.style.display === "none") {
+                commands.style.display = "block";
+            } else {
+                commands.style.display = "none";
+            }
+        });
+    </script>
+</body>
+</html>
