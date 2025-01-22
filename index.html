@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AI Voice Assistant - Kaoruko Waguri</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -15,11 +15,13 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
         .container {
-            max-width: 600px;
+            width: 90%;
+            max-width: 600px;  /* Adjust to fit smaller screens */
             margin: auto;
             padding: 20px;
             background: rgba(0, 0, 0, 0.8);
@@ -27,18 +29,18 @@
             border: 2px solid #e74c3c;
             backdrop-filter: blur(10px);
             text-align: center;
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.2);
         }
 
         #logo {
-            width: 100px;
-            height: 100px;
+            width: 120px; /* Smaller for mobile */
+            height: 120px;
             border-radius: 50%;
-            background: transparent;
+            border: 2px solid #e74c3c;
             margin: 0 auto 20px;
             display: flex;
             justify-content: center;
             align-items: center;
-            border: 2px solid #e74c3c;
             overflow: hidden;
         }
 
@@ -48,20 +50,33 @@
             object-fit: cover;
         }
 
+        h1 {
+            font-size: 24px; /* Smaller font for mobile */
+            color: #e74c3c;
+        }
+
         button {
             background-color: transparent;
             border: 2px solid #e74c3c;
             color: white;
-            padding: 10px 20px;
+            padding: 12px 24px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.3s ease;
             font-family: 'Poppins', sans-serif;
             font-weight: 600;
             margin: 10px 0;
+            border-radius: 30px; /* Touch-friendly rounded corners */
+            width: 100%; /* Full width for touch devices */
         }
 
-        button:hover {
+        button:hover, button:active {
             background-color: #e74c3c;
+        }
+
+        #status {
+            font-size: 16px;
+            color: #e74c3c;
+            margin: 20px 0;
         }
 
         #commands {
@@ -71,6 +86,14 @@
             padding: 15px;
             margin-top: 10px;
             text-align: left;
+            border-radius: 10px;
+            overflow-y: auto;
+            max-height: 200px;
+        }
+
+        #commands h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
         }
 
         #commands ul {
@@ -80,13 +103,44 @@
 
         #commands li {
             margin-bottom: 10px;
+            padding: 5px 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+
+            #logo {
+                width: 100px;
+                height: 100px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            button {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+
+            #status {
+                font-size: 14px;
+            }
+
+            #commands {
+                max-height: 150px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div id="logo">
-            <img src="logo.png" alt="Alya Logo">
+            <img src="logo.png" alt="Kaoruko Waguri Logo">
         </div>
         <h1>Hey there, I'm Kaoruko Waguri!</h1>
         <button id="start">Start Voice Assistant</button>
@@ -99,14 +153,14 @@
                 <li>Weather of (city name)</li>
                 <li>Open (featured webpages)</li>
                 <li>Tell me a joke</li>
-                <li> Search ( What u wanna search )</li>
+                <li>Search (What you want to search)</li>
             </ul>
         </div>
         <button id="contact-us">Contact Us</button>
     </div>
 
     <script>
-        // Initialize Web Speech API for recognition
+               // Initialize Web Speech API for recognition
         const startButton = document.getElementById("start");
         const statusText = document.getElementById("status");
         const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
