@@ -24,7 +24,7 @@
             padding: 20px;
             background: rgba(0, 0, 0, 0.8);
             border-radius: 20px;
-            border: 2px solid #e74c3c; /* Red border */
+            border: 2px solid #e74c3c;
             backdrop-filter: blur(10px);
             text-align: center;
         }
@@ -38,7 +38,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            border: 2px solid #e74c3c;  /* Red border around the logo */
+            border: 2px solid #e74c3c;
             overflow: hidden;
         }
 
@@ -57,7 +57,7 @@
             transition: background-color 0.3s;
             font-family: 'Poppins', sans-serif;
             font-weight: 600;
-            margin: 10px 0; /* Add some spacing between buttons */
+            margin: 10px 0;
         }
 
         button:hover {
@@ -65,7 +65,7 @@
         }
 
         #commands {
-            display: none; /* Initially hidden */
+            display: none;
             background: rgba(255, 255, 255, 0.1);
             border: 2px solid #e74c3c;
             padding: 15px;
@@ -99,176 +99,194 @@
                 <li>Weather of (city name)</li>
                 <li>Open (featured webpages)</li>
                 <li>Tell me a joke</li>
-                <li>Search (thing you want to search)</li>
+                <li> Search ( What u wanna search )</li>
             </ul>
         </div>
         <button id="contact-us">Contact Us</button>
     </div>
 
     <script>
-        
-        // Initialize the Web Speech API for recognition
-    const startButton = document.getElementById("start");
-    const statusText = document.getElementById("status");
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        // Initialize Web Speech API for recognition
+        const startButton = document.getElementById("start");
+        const statusText = document.getElementById("status");
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        const synth = window.speechSynthesis; // Speech synthesis API
 
-    recognition.lang = "en-US"; // Set language
-    recognition.interimResults = false; // Final results only
+        recognition.lang = "en-US";
+        recognition.interimResults = false;
 
-    startButton.addEventListener("click", () => {
-      statusText.textContent = "Status: Listening...";
-      recognition.start();
-    });
+        const speak = (text) => {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = "en-US";
+            synth.speak(utterance);
+        };
 
-    recognition.onresult = (event) => {
-      const command = event.results[0][0].transcript.toLowerCase();
-      statusText.textContent = `Command: ${command}`;
-
-      // Handle commands for websites and apps
-      if (command.includes("open google")) {
-        statusText.textContent = "Opening Google...";
-        window.open("https://www.google.com", "_blank");
-      } else if (command.includes("open youtube")) {
-        statusText.textContent = "Opening YouTube...";
-        window.open("https://www.youtube.com", "_blank");
-      } else if (command.includes("open whatsapp")) {
-        statusText.textContent = "Opening WhatsApp...";
-        window.open("https://web.whatsapp.com", "_blank");
-      } else if (command.includes("open facebook")) {
-        statusText.textContent = "Opening Facebook...";
-        window.open("https://www.facebook.com", "_blank");
-      } else if (command.includes("open instagram")) {
-        statusText.textContent = "Opening Instagram...";
-        window.open("https://www.instagram.com", "_blank");
-      } else if (command.includes("open twitter") || command.includes("open x")) {
-        statusText.textContent = "Opening Twitter...";
-        window.open("https://www.twitter.com", "_blank");
-      } else if (command.includes("open telegram")) {
-        statusText.textContent = "Opening Telegram...";
-        window.open("https://web.telegram.org", "_blank");
-      } else if (command.includes("open reddit")) {
-        statusText.textContent = "Opening Reddit...";
-        window.open("https://www.reddit.com", "_blank");
-      } else if (command.includes("open linkedin")) {
-        statusText.textContent = "Opening LinkedIn...";
-        window.open("https://www.linkedin.com", "_blank");
-      } else if (command.includes("open pinterest")) {
-        statusText.textContent = "Opening Pinterest...";
-        window.open("https://www.pinterest.com", "_blank");
-      } else if (command.includes("open crunchyroll")) {
-        statusText.textContent = "Opening Crunchyroll...";
-        window.open("https://www.crunchyroll.com", "_blank");
-      }else if (command.includes("search")) {
-   const searchQuery = command.replace("search", "").trim();
-   if (searchQuery) {
-      statusText.textContent = `Searching for ${searchQuery}...`;
-      window.open(`https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`, "_blank");
-   }
-}else if (command.includes("weather in")) {
-   const city = command.replace("weather in", "").trim(); // Extract city name
-   fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=d01820511ac18f635bbff98a127f6908&units=metric`)
-      .then(response => response.json())
-      .then(data => {
-         if (data.main) {
-            const temp = data.main.temp;
-            statusText.textContent = `The current temperature in ${city} is ${temp}°C`;
-         } else {
-            statusText.textContent = "Sorry, I couldn't find the weather information for that city.";
-         }
-      })
-      .catch(error => {
-         statusText.textContent = "Error fetching weather data.";
-      });
-}else if (command.includes("play music") || command.includes("play song")) {
-    const songQuery = command.replace("play music", "").replace("play song", "").trim();
-    
-    if (songQuery) {
-        statusText.textContent = `Searching for "${songQuery}"...`;
-
-        // Use the provided YouTube API Key
-        const apiKey = 'AIzaSyDBUuBDmtEjT6HKQoZy4QhTNQ5N2fyg4Zw';  // Provided YouTube API key
-        fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(songQuery)}&type=video&key=${apiKey}`)
-            .then(response => response.json())
-            .then(data => {
-                const videoId = data.items[0].id.videoId; // Get the first result's video ID
-                const videoUrl = `https://www.youtube.com/watch?v=${videoId}&autoplay=1`; // YouTube URL with autoplay
-
-                // Open the video URL in a new tab with autoplay
-                window.open(videoUrl, "_blank");
-                statusText.textContent = `Playing "${songQuery}" on YouTube...`;
-            })
-            .catch(error => {
-                statusText.textContent = "Sorry, I couldn't find the song.";
-            });
-    } else {
-        statusText.textContent = "Please specify a song name.";
-    }
-}
-else if (command.includes("tell me a joke")) {
-   fetch('https://official-joke-api.appspot.com/random_joke')
-      .then(response => response.json())
-      .then(data => {
-         const joke = `${data.setup} - ${data.punchline}`;
-         statusText.textContent = joke;
-      })
-      .catch(error => {
-         statusText.textContent = "Sorry, I couldn't fetch a joke right now.";
-      });
-}
- else if (command.includes("open github")) {
-        statusText.textContent = "Opening GitHub...";
-        window.open("https://www.github.com", "_blank");
-      } else if (command.includes("open stack overflow")) {
-        statusText.textContent = "Opening Stack Overflow...";
-        window.open("https://stackoverflow.com", "_blank");
-      } else if (command.includes("open amazon")) {
-        statusText.textContent = "Opening Amazon...";
-        window.open("https://www.amazon.com", "_blank");
-      } else if (command.includes("open netflix")) {
-        statusText.textContent = "Opening Netflix...";
-        window.open("https://www.netflix.com", "_blank");
-      } else if (command.includes("open spotify")) {
-        statusText.textContent = "Opening Spotify...";
-        window.open("https://open.spotify.com", "_blank");
-      } else if (command.includes("open flipkart")) {
-        statusText.textContent = "Opening Flipkart...";
-        window.open("https://www.flipkart.com", "_blank");
-      } else if (command.includes("open snapchat")) {
-        statusText.textContent = "Opening Snapchat...";
-        window.open("https://www.snapchat.com", "_blank");
-      } else if (command.includes("open quora")) {
-        statusText.textContent = "Opening Quora...";
-        window.open("https://www.quora.com", "_blank");
-      } else if (command.includes("open zoom")) {
-        statusText.textContent = "Opening Zoom...";
-        window.open("https://zoom.us", "_blank");
-      } else if (command.includes("open microsoft teams")) {
-        statusText.textContent = "Opening Microsoft Teams...";
-        window.open("https://teams.microsoft.com", "_blank");
-      } else if (command.includes("open paypal")) {
-        statusText.textContent = "Opening PayPal...";
-        window.open("https://www.paypal.com", "_blank");
-      } else if (command.includes("open discord")) {
-        statusText.textContent = "Opening Discord...";
-        window.open("https://discord.com", "_blank");
-      } else {
-        statusText.textContent = "Unknown command. Try again.";
-      }
-    };
-
-    recognition.onerror = (event) => {
-      statusText.textContent = `Error: ${event.error}`;
-    };
-
-    recognition.onend = () => {
-      statusText.textContent = "Status: Waiting for command...";
-    };
-        document.getElementById('contact-us').addEventListener('click', function() {
-            window.open('https://twitter.com/ryuudev0', '_blank');
+        startButton.addEventListener("click", () => {
+            statusText.textContent = "Status: Listening...";
+            speak("Hello! How can I assist you today ");
+            recognition.start();
         });
 
-        document.getElementById('show-commands').addEventListener('click', function() {
-            var commands = document.getElementById('commands');
+        recognition.onresult = (event) => {
+            const command = event.results[0][0].transcript.toLowerCase();
+            statusText.textContent = `Command: ${command}`;
+            speak(`You said: ${command}`);
+            
+            // webpages Opening Commands Section 
+            if (command.includes("open google")) {
+                speak("Opening Google.");
+                window.open("https://www.google.com", "_blank");
+            } else if (command.includes("open youtube")) {
+                speak("Opening YouTube.");
+                window.open("https://www.youtube.com", "_blank");
+            }else if (command.includes("open whatsapp")) {
+        speak("Opening WhatsApp.");
+        window.open("https://web.whatsapp.com", "_blank");
+      } else if (command.includes("open facebook")) {
+        speak("Opening Facebook.");
+        window.open("https://www.facebook.com", "_blank");
+      }else if (command.includes("open instagram")) {
+    speak("Opening Instagram");
+    window.open("https://www.instagram.com", "_blank");
+} else if (command.includes("open twitter") || command.includes("open x")) {
+    speak("Opening Twitter");
+    window.open("https://www.twitter.com", "_blank");
+} else if (command.includes("open telegram")) {
+    speak("Opening Telegram");
+    window.open("https://web.telegram.org", "_blank");
+} else if (command.includes("open reddit")) {
+    speak("Opening Reddit");
+    window.open("https://www.reddit.com", "_blank");
+} else if (command.includes("open linkedin")) {
+    speak("Opening LinkedIn");
+    window.open("https://www.linkedin.com", "_blank");
+} else if (command.includes("open pinterest")) {
+    speak("Opening Pinterest");
+    window.open("https://www.pinterest.com", "_blank");
+} else if (command.includes("open crunchyroll")) {
+    speak("Opening Crunchyroll");
+    window.open("https://www.crunchyroll.com", "_blank");
+         }else if (command.includes("open github")) {
+    speak("Opening GitHub");
+    window.open("https://www.github.com", "_blank");
+} else if (command.includes("open stack overflow")) {
+    speak("Opening Stack Overflow");
+    window.open("https://stackoverflow.com", "_blank");
+} else if (command.includes("open amazon")) {
+    speak("Opening Amazon");
+    window.open("https://www.amazon.com", "_blank");
+} else if (command.includes("open netflix")) {
+    speak("Opening Netflix");
+    window.open("https://www.netflix.com", "_blank");
+} else if (command.includes("open spotify")) {
+    speak("Opening Spotify");
+    window.open("https://open.spotify.com", "_blank");
+} else if (command.includes("open flipkart")) {
+    speak("Opening Flipkart");
+    window.open("https://www.flipkart.com", "_blank");
+} else if (command.includes("open snapchat")) {
+    speak("Opening Snapchat");
+    window.open("https://www.snapchat.com", "_blank");
+} else if (command.includes("open quora")) {
+    speak("Opening Quora");
+    window.open("https://www.quora.com", "_blank");
+} else if (command.includes("open zoom")) {
+    speak("Opening Zoom");
+    window.open("https://zoom.us", "_blank");
+} else if (command.includes("open microsoft teams")) {
+    speak("Opening Microsoft Teams");
+    window.open("https://teams.microsoft.com", "_blank");
+} else if (command.includes("open paypal")) {
+    speak("Opening PayPal");
+    window.open("https://www.paypal.com", "_blank");
+} else if (command.includes("open discord")) {
+    speak("Opening Discord");
+    window.open("https://discord.com", "_blank");
+}          
+
+// weather Search Command Section 
+else if (command.includes("weather in")) {
+                const city = command.replace("weather in", "").trim();
+                fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=d01820511ac18f635bbff98a127f6908&units=metric`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.main) {
+                            const temp = data.main.temp;
+                            const weatherMessage = `The current temperature in ${city} is ${temp}°C.`;
+                            statusText.textContent = weatherMessage;
+                            speak(weatherMessage);
+                        } else {
+                            speak("Sorry, I couldn't find the weather information for that city.");
+                        }
+                    });
+            }
+            
+  // Search System command Section 
+            else if (command.includes("search")) {
+    const searchQuery = command.replace("search", "").trim();
+    if (searchQuery) {
+        speak(`Searching for ${searchQuery}`);
+        window.open(`https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`, "_blank");
+    } else {
+        speak("Please specify what you want to search for.");
+    }
+}
+
+// Play Music Command Section
+            else if (command.includes("play music")) {
+                const songQuery = command.replace("play music", "").trim();
+                if (songQuery) {
+                    speak(`Searching for ${songQuery} on YouTube.`);
+                    const apiKey = 'AIzaSyDBUuBDmtEjT6HKQoZy4QhTNQ5N2fyg4Zw';
+                    fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(songQuery)}&type=video&key=${apiKey}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const videoId = data.items[0].id.videoId;
+                            const videoUrl = `https://www.youtube.com/watch?v=${videoId}&autoplay=1`;
+                            window.open(videoUrl, "_blank");
+                            statusText.textContent = `Playing "${songQuery}" on YouTube.`;
+                        });
+                } else {
+                    speak("Please specify a song name.");
+                }
+            }
+            
+// Joke Command Section 
+            else if (command.includes("tell me a joke")) {
+                fetch('https://official-joke-api.appspot.com/random_joke')
+                    .then(response => response.json())
+                    .then(data => {
+                        const joke = `${data.setup} - ${data.punchline}`;
+                        statusText.textContent = joke;
+                        speak(joke);
+                    });
+            } 
+        
+        // Bye command Section
+            else if (command.includes("bye")) {
+                speak("Goodbye! Have a nice day.");
+                statusText.textContent = "Goodbye!";
+            } else {
+                speak("Sorry, I didn't understand that command.");
+            }
+        };
+
+        recognition.onerror = (event) => {
+            statusText.textContent = `Error: ${event.error}`;
+            speak("An error occurred. Please try again.");
+        };
+
+        recognition.onend = () => {
+            statusText.textContent = "Status: Waiting for command...";
+        };
+
+        document.getElementById("contact-us").addEventListener("click", () => {
+            speak("Redirecting you to my contact page.");
+            window.open("https://twitter.com/ryuudev0", "_blank");
+        });
+
+        document.getElementById("show-commands").addEventListener("click", () => {
+            const commands = document.getElementById("commands");
             if (commands.style.display === "none") {
                 commands.style.display = "block";
             } else {
