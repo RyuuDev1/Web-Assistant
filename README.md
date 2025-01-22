@@ -32,7 +32,3 @@ Whether you want to listen to your favorite music, know the weather forecast, or
 ```bash
 git clone https://github.com/yourusername/kaoruko-voice-assistant.git
 
-### 2. Open the project :
-```bash
-cd kaoruko-voice-assistant
-open index.html
