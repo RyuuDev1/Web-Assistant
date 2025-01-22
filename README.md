@@ -30,5 +30,5 @@ Whether you want to listen to your favorite music, know the weather forecast, or
 
 ### 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/kaoruko-voice-assistant.git
+git clone https://github.com/ryuudev1/kaoruko-voice-assistant.git
 
